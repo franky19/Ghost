@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+/* eslint-disable camelcase */
 import AuthenticatedRoute from 'ghost-admin/routes/authenticated';
 import {ALL_POST_INCLUDES} from '../../adapters/post';
 import {NotFoundError} from 'ember-ajax/errors';
@@ -124,7 +125,41 @@ export default class EditRoute extends AuthenticatedRoute {
         };
     }
 
+    // there's no specific controller for this route, instead all editor
+    // handling is done on the editor route/controller
     setupController(controller, post) {
+        // For nested routes, we need to explicitly get the parent lexical-editor controller
+        // The controller parameter is for the edit route, but we need to set on the parent
+        super.setupController(controller, post);
+
+        const lexicalEditorController = this.controllerFor('lexical-editor');
+        const lockedByUser = this.getLockedByUser(post);
+
+        // IMPORTANT: Call setPost FIRST - it calls reset() which might clear properties
+        lexicalEditorController.setPost(post);
+
+        // THEN set lockedByUser AFTER setPost to prevent it being reset
+        lexicalEditorController.set('lockedByUser', lockedByUser);
+
+        // ALSO set in the modal state service so modal component can access it
+        this.suarLockModalState.setLockData(lockedByUser, post);
+    }
+
+    deactivate() {
+        const editor = this.controllerFor('lexical-editor');
+        const post = editor.post;
+
+        if (post && this.hasLock) {
+            this.suarLock.unlock(post.id);
+        }
+
+        // Clear the service data when leaving the route
+        this.suarLockModalState.clearLockData();
+
+        this.lockInfo = null;
+        this.hasLock = false;
+    }
+}
         // For nested routes, we need to explicitly get the parent lexical-editor controller
         // The controller parameter is for the edit route, but we need to set on the parent
         super.setupController(controller, post);
