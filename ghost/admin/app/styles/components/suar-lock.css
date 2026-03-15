@@ -1,0 +1,103 @@
+/* ==========================
+   SUAR LOCK ALERT
+   ========================== */
+.suar-lock-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+}
+
+/* Box utama */
+.suar-lock-alert {
+    background: #ffffff;
+    color: #222;
+    padding: 2.5rem 3rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Avatar user */
+.suar-lock-alert .suar-lock-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    object-fit: cover;
+    border: 3px solid #eee;
+}
+
+/* Judul dan teks */
+.suar-lock-alert .suar-lock-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #111;
+}
+
+.suar-lock-alert .suar-lock-message {
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* Tombol */
+.suar-lock-alert .suar-lock-button {
+    background: #151515;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.suar-lock-alert .suar-lock-button:hover {
+    background: #000;
+    transform: translateY(-1px);
+}
+
+.suar-lock-alert .suar-lock-button:active {
+    transform: translateY(0);
+}
+
+.suar-lock-alert {
+    animation: suarFadeIn 0.3s ease;
+}
+
+@keyframes suarFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Fullscreen Modal Styling */
+.fullscreen-modal-total-overlay {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(6px);
+}
+
+.fullscreen-modal.fullscreen-modal-suar-lock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gh-update-banner {
+    display: none !important;
+}
