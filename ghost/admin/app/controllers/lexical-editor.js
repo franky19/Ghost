@@ -164,6 +164,7 @@ export default class LexicalEditorController extends Controller {
     @inject config;
 
     @tracked excerptErrorMessage = '';
+    @tracked lockedByUser = null;
 
     /* public properties -----------------------------------------------------*/
 
@@ -305,6 +306,12 @@ export default class LexicalEditorController extends Controller {
         const titleTk = this.titleHasTk ? 1 : 0;
         const excerptTk = (this.feature.editorExcerpt && this.excerptHasTk) ? 1 : 0;
         return titleTk + excerptTk + this.postTkCount + this.featureImageTkCount;
+    }
+
+    // SUAR.id Custom
+    @action
+    closeSuarLock() {
+        this.router.transitionTo('posts');
     }
 
     @action
@@ -1274,6 +1281,7 @@ export default class LexicalEditorController extends Controller {
         this._postStates = [];
 
         this.set('post', null);
+        this.set('lockedByUser', null);
         this.set('hasDirtyAttributes', false);
         this.set('shouldFocusTitle', false);
         this.set('showSettingsMenu', false);
