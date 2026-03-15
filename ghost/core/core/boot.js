@@ -11,6 +11,7 @@
 require('./server/overrides');
 const debug = require('@tryghost/debug')('boot');
 // END OF GLOBAL REQUIRES
+const runSuarCustomMigrations = require('./server/data/migrations/suar-custom');
 
 /**
  * Helper class to create consistent log messages
@@ -514,6 +515,9 @@ async function bootGhost({backend = true, frontend = true, server = true} = {}) 
         debug('Begin: Get DB ready');
         await initDatabase({config});
         bootLogger.log('database ready');
+        debug('Begin: Suar Custom Migrations');
+        await runSuarCustomMigrations();
+        debug('End: Suar Custom Migrations');
         const connection = require('./server/data/db/connection');
         sentry.initQueryTracing(
             connection
