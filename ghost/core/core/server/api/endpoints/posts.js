@@ -16,7 +16,9 @@ const allowedIncludes = [
     'count.positive_feedback',
     'count.negative_feedback',
     'post_revisions',
-    'post_revisions.author'
+    'post_revisions.author',
+    'suar_lock',
+    'suar_lock.user'
 ];
 const unsafeAttrs = ['status', 'authors', 'visibility'];
 
@@ -329,6 +331,65 @@ const controller = {
         },
         async query(frame) {
             return postsService.copyPost(frame);
+        }
+    },
+
+    suarLock: {
+        statusCode: 200,
+        headers: {
+            cacheInvalidate: false
+        },
+        options: [
+            'id'
+        ],
+        validation: {
+            options: {
+                id: {
+                    required: true
+                }
+            }
+        },
+        permissions: {
+            method: 'edit'
+        },
+        async query(frame) {
+            return postsService.suarLockPost(frame);
+        }
+    },
+
+    suarUnlock: {
+        statusCode: 200,
+        headers: {
+            cacheInvalidate: false
+        },
+        options: [
+            'id'
+        ],
+        validation: {
+            options: {
+                id: {
+                    required: true
+                }
+            }
+        },
+        permissions: {
+            method: 'edit'
+        },
+        async query(frame) {
+            return postsService.suarUnlockPost(frame);
+        }
+    },
+
+    suarUnlockAll: {
+        statusCode: 200,
+        headers: {
+            cacheInvalidate: false
+        },
+        permissions: {
+            method: 'edit'
+        },
+        async query(frame) {
+            return postsService.suarUnlockAllPost(frame);
         }
     }
 };
