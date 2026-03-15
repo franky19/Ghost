@@ -50,6 +50,7 @@ export default Route.extend(ShortcutsRoute, {
     session: service(),
     settings: service(),
     stateBridge: service(),
+    suarLock: service(),
     ui: service(),
     billing: service(),
     modals: service(),
@@ -88,6 +89,8 @@ export default Route.extend(ShortcutsRoute, {
 
         if (this.get('session.isAuthenticated')) {
             this.session.appLoadTransition = transition;
+            // 🔓 Auto-unlock all posts locked by current user on admin load
+            this.suarLock.unlockAll();
         }
 
         this._appLoaded = true;
