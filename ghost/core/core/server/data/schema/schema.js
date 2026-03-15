@@ -1216,6 +1216,31 @@ module.exports = {
         created_at: {type: 'dateTime', nullable: false},
         updated_at: {type: 'dateTime', nullable: true}
     },
+    // custom suar lock
+    suar_post_lock: {
+        id: {type: 'string', maxlength: 24, primary: true},
+
+        post_id: {
+            type: 'string',
+            maxlength: 24,
+            nullable: false,
+            references: 'posts.id',
+            onDelete: 'CASCADE'
+        },
+
+        user_id: {
+            type: 'string',
+            maxlength: 24,
+            nullable: true,
+            references: 'users.id',
+            onDelete: 'SET NULL'
+        },
+
+        locked_at: {
+            type: 'timestamp',
+            nullable: false
+        }
+    },
     gifts: {
         id: {type: 'string', maxlength: 24, nullable: false, primary: true},
         token: {type: 'string', maxlength: 48, nullable: false, unique: true},
