@@ -35,11 +35,18 @@ module.exports = function apiRoutes() {
     router.post('/posts', mw.authAdminApi, http(api.posts.add));
     router.del('/posts', mw.authAdminApi, http(api.posts.bulkDestroy));
     router.put('/posts/bulk', mw.authAdminApi, http(api.posts.bulkEdit));
+    router.get('/posts/export', mw.authAdminApi, http(api.posts.exportCSV));
+
+    // Custom Suar.id Specific Endpoints - Must come before :id routes
+    router.put('/posts/suar-unlock-all', mw.authAdminApi, http(api.posts.suarUnlockAll));
+
     router.get('/posts/:id', mw.authAdminApi, http(api.posts.read));
     router.get('/posts/slug/:slug', mw.authAdminApi, http(api.posts.read));
     router.put('/posts/:id', mw.authAdminApi, http(api.posts.edit));
     router.del('/posts/:id', mw.authAdminApi, http(api.posts.destroy));
     router.post('/posts/:id/copy', mw.authAdminApi, http(api.posts.copy));
+    router.put('/posts/:id/suar-lock', mw.authAdminApi, http(api.posts.suarLock));
+    router.put('/posts/:id/suar-unlock', mw.authAdminApi, http(api.posts.suarUnlock));
 
     router.get('/mentions', mw.authAdminApi, http(api.mentions.browse));
 
