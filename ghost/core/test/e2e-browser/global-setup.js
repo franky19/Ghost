@@ -4,7 +4,16 @@ const {exec} = require('child_process');
 const {buildStripeCommand} = require('./utils/stripe-cli');
 
 module.exports = async function globalSetup() {
+    if (process.env.WEBHOOK_SECRET) {
+        console.log('[stripe] Using webhook secret from environment');
+        return;
+    }
+
     const command = buildStripeCommand('listen', '--print-secret');
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('STRIPE_SECRET_KEY is required for browser tests when WEBHOOK_SECRET is not preset');
+    }
 
     let lastError;
     for (let attempt = 1; attempt <= 3; attempt++) {
