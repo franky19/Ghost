@@ -46,6 +46,7 @@ export default class PostsRoute extends AuthenticatedRoute {
     @service feature;
     @service postAnalytics;
     @service settings;
+    @service suarLock;
 
     queryParams = {
         type: {refreshModel: true},
@@ -73,6 +74,12 @@ export default class PostsRoute extends AuthenticatedRoute {
                 }
             }
         });
+    }
+
+    activate() {
+        if (this.routeName === 'posts') {
+            this.suarLock.unlockAll();
+        }
     }
 
     model(params) {
