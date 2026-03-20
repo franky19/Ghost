@@ -1178,7 +1178,7 @@ module.exports = {
             maxlength: 24,
             nullable: false,
             references: 'posts.id',
-            onDelete: 'CASCADE'
+            cascadeDelete: true
         },
 
         user_id: {
@@ -1186,11 +1186,11 @@ module.exports = {
             maxlength: 24,
             nullable: true,
             references: 'users.id',
-            onDelete: 'SET NULL'
+            setNullDelete: true
         },
 
         locked_at: {
-            type: 'timestamp',
+            type: 'dateTime',
             nullable: false
         }
     }
