@@ -136,6 +136,7 @@ export default class EditRoute extends AuthenticatedRoute {
 
         // THEN set lockedByUser AFTER setPost to prevent it being reset
         lexicalEditorController.set('lockedByUser', lockedByUser);
+        lexicalEditorController.set('showSuarLockModal', Boolean(lockedByUser));
 
         // ALSO set in the modal state service so modal component can access it
         this.suarLockModalState.setLockData(lockedByUser, post);

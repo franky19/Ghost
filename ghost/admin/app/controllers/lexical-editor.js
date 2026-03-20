@@ -158,6 +158,7 @@ export default class LexicalEditorController extends Controller {
     @service search;
     @service session;
     @service settings;
+    @service('suar-lock-modal-state') suarLockModalState;
     @service ui;
     @service localRevisions;
 
@@ -165,6 +166,7 @@ export default class LexicalEditorController extends Controller {
 
     @tracked excerptErrorMessage = '';
     @tracked lockedByUser = null;
+    @tracked showSuarLockModal = false;
 
     /* public properties -----------------------------------------------------*/
 
@@ -311,6 +313,8 @@ export default class LexicalEditorController extends Controller {
     // SUAR.id Custom
     @action
     closeSuarLock() {
+        this.showSuarLockModal = false;
+        this.suarLockModalState.clearLockData();
         this.router.transitionTo('posts');
     }
 
@@ -1282,6 +1286,7 @@ export default class LexicalEditorController extends Controller {
 
         this.set('post', null);
         this.set('lockedByUser', null);
+        this.set('showSuarLockModal', false);
         this.set('hasDirtyAttributes', false);
         this.set('shouldFocusTitle', false);
         this.set('showSettingsMenu', false);
