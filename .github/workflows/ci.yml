@@ -389,11 +389,17 @@ jobs:
       run: yarn nx run ghost-admin:build:dev
 
     - name: Run Playwright tests locally
+      if: ${{ secrets.STRIPE_PUBLISHABLE_KEY != '' && secrets.STRIPE_SECRET_KEY != '' }}
       run: yarn test:browser
       env:
         CI: true
         STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
         STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+
+    - name: Skip Playwright tests when Stripe secrets are unavailable
+      if: ${{ secrets.STRIPE_PUBLISHABLE_KEY == '' || secrets.STRIPE_SECRET_KEY == '' }}
+      run: |
+        echo "::notice::Skipping browser tests because Stripe secrets are unavailable for this run."
 
     - uses: tryghost/actions/actions/slack-build@main
       if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
