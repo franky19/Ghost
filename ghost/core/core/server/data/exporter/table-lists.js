@@ -58,6 +58,7 @@ const BACKUP_TABLES = [
     'recommendation_click_events',
     'recommendation_subscribe_events',
     'outbox',
+    'gifts',
     'suar_post_lock'
 ];
 
