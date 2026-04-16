@@ -1251,7 +1251,11 @@ module.exports = {
         redeemed_at: {type: 'dateTime', nullable: true},
         consumed_at: {type: 'dateTime', nullable: true},
         expired_at: {type: 'dateTime', nullable: true},
-        refunded_at: {type: 'dateTime', nullable: true}
+        refunded_at: {type: 'dateTime', nullable: true},
+        '@@INDEXES@@': [
+            ['status', 'consumes_at'],
+            ['status', 'expires_at']
+        ]
     },
     // custom suar lock
     suar_post_lock: {
