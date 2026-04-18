@@ -56,7 +56,8 @@ const BACKUP_TABLES = [
     'recommendations',
     'recommendation_click_events',
     'recommendation_subscribe_events',
-    'outbox'
+    'outbox',
+    'suar_post_lock'
 ];
 
 // NOTE: exposing only tables which are going to be included in a "default" export file

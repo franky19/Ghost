@@ -9,7 +9,9 @@ export const ALL_POST_INCLUDES = [
     'newsletter',
     'count.clicks',
     'post_revisions',
-    'post_revisions.author'
+    'post_revisions.author',
+    'suar_lock',
+    'suar_lock.user'
 ].join(',');
 
 export default class Post extends ApplicationAdapter {

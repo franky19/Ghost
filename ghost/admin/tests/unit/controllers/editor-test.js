@@ -510,4 +510,32 @@ describe('Unit: Controller: lexical-editor', function () {
             expect(allPostStates).to.deep.equal(expectedStates);
         });
     });
+
+    describe('suar lock modal state', function () {
+        it('closeSuarLock hides the modal and navigates back to posts', function () {
+            const controller = this.owner.lookup('controller:lexical-editor');
+            const transitionToStub = sinon.stub(controller.router, 'transitionTo');
+            const clearLockDataStub = sinon.stub(this.owner.lookup('service:suar-lock-modal-state'), 'clearLockData');
+
+            controller.showSuarLockModal = true;
+
+            controller.closeSuarLock();
+
+            expect(controller.showSuarLockModal).to.be.false;
+            expect(clearLockDataStub.calledOnce).to.be.true;
+            expect(transitionToStub.calledOnceWith('posts')).to.be.true;
+        });
+
+        it('reset clears the suar lock modal visibility', function () {
+            const controller = this.owner.lookup('controller:lexical-editor');
+
+            controller.showSuarLockModal = true;
+            controller.lockedByUser = {id: '1'};
+
+            controller.reset();
+
+            expect(controller.showSuarLockModal).to.be.false;
+            expect(controller.lockedByUser).to.be.null;
+        });
+    });
 });

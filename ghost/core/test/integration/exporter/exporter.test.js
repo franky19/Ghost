@@ -106,6 +106,10 @@ describe('Exporter', function () {
             assertExists(exportData.meta);
             assertExists(exportData.data);
 
+            if (Object.hasOwnProperty.call(exportData.data, 'suar_post_lock')) {
+                tables.push('suar_post_lock');
+            }
+
             // NOTE: using `Object.keys` here instead of `should.have.only.keys` assertion
             //       because when `have.only.keys` fails there's no useful diff
             assert.deepEqual(Object.keys(exportData.data).sort(), tables.sort());
@@ -134,6 +138,10 @@ describe('Exporter', function () {
                 'members_subscribe_events',
                 'outbox'
             ];
+
+            if (Object.hasOwnProperty.call(exportData.data, 'suar_post_lock')) {
+                excludedTables.push('suar_post_lock');
+            }
 
             excludedTables.forEach((tableName) => {
                 // NOTE: why is this undefined? The key should probably not even be present

@@ -1,5 +1,5 @@
 const nql = require('@tryghost/nql');
-const {BadRequestError} = require('@tryghost/errors');
+const {BadRequestError, ConflictError, NotFoundError} = require('@tryghost/errors');
 const tpl = require('@tryghost/tpl');
 const errors = require('@tryghost/errors');
 const ObjectId = require('bson-objectid').default;
@@ -74,6 +74,99 @@ class PostsService {
         }
 
         return dto;
+    }
+
+    async suarLockPost(frame) {
+        const id = frame.options.id || frame.data?.posts?.[0]?.id;
+        const userId = frame?.user?.id || frame?.options?.context?.user?.id;
+
+        if (!id) {
+            throw new BadRequestError({message: 'Missing post ID'});
+        }
+
+        if (!userId) {
+            throw new BadRequestError({message: 'Missing User ID'});
+        }
+
+        const post = await this.models.Post.findOne({id, status: 'all'});
+        if (!post) {
+            throw new NotFoundError({message: 'Post not found'});
+        }
+
+        const existingLock = await this.models.SuarPostLock.where({post_id: id}).fetch({require: false, withRelated: ['user']});
+        if (existingLock) {
+            const lockedByUser = existingLock.related('user').toJSON();
+            const error = new ConflictError({
+                message: 'Post is locked by another user'
+            });
+            // @ts-ignore
+            error.context = {
+                locked_by: lockedByUser
+            };
+            throw error;
+        }
+
+        await this.models.SuarPostLock.add({
+            post_id: id,
+            user_id: userId || null,
+            locked_at: new Date()
+        }, frame.options);
+
+        return {
+            id: post.id,
+            locked: true,
+            locked_by: userId
+        };
+    }
+
+    async suarUnlockPost(frame) {
+        const id = frame.options.id || frame.data?.posts?.[0]?.id;
+        if (!id) {
+            throw new BadRequestError({message: 'Missing post ID'});
+        }
+
+        const post = await this.models.Post.findOne({id, status: 'all'});
+        if (!post) {
+            throw new NotFoundError({message: 'Post not found'});
+        }
+
+        const lock = await this.models.SuarPostLock.where({post_id: id}).fetch({require: false});
+        if (!lock) {
+            throw new ConflictError({message: 'Post is not locked'});
+        }
+
+        await this.models.SuarPostLock
+            .query()
+            .where('post_id', id)
+            .del();
+
+        return {
+            id: post.id,
+            locked: false
+        };
+    }
+
+    async suarUnlockAllPost(frame) {
+        const userId = frame?.user?.id || frame?.options?.context?.user?.id;
+
+        if (!userId) {
+            throw new BadRequestError({message: 'Missing User ID'});
+        }
+
+        const locks = await this.models.SuarPostLock.where({user_id: userId}).fetchAll();
+
+        const postIds = locks.map(lock => lock.get('post_id'));
+
+        await this.models.SuarPostLock
+            .query()
+            .where('user_id', userId)
+            .del();
+
+        return {
+            locked: false,
+            unlocked_posts: postIds,
+            count: postIds.length
+        };
     }
 
     /**

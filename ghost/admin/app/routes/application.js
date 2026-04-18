@@ -50,6 +50,7 @@ export default Route.extend(ShortcutsRoute, {
     session: service(),
     settings: service(),
     stateBridge: service(),
+    suarLock: service(),
     ui: service(),
     billing: service(),
     modals: service(),

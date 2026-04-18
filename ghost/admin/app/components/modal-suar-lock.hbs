@@ -1,0 +1,29 @@
+<div class="suar-lock-modal">
+    <div class="suar-lock-alert">
+
+        {{#if this.lockedByUser}}
+            {{#if this.hasLockedByUserAvatar}}
+            <img src={{this.lockedByUserAvatar}} alt={{this.lockedByUserName}} class="suar-lock-avatar">
+            {{/if}}
+
+            <h2 class="suar-lock-title">Post sedang dikunci</h2>
+
+            <p class="suar-lock-message">
+                Post ini sedang diedit oleh <strong>{{this.lockedByUserName}}</strong>.
+                ({{this.lockedByUserEmail}})
+            </p>
+
+            <div class="suar-lock-message">
+                <div><strong>Nama:</strong> {{this.lockedByUserName}}</div>
+                <div><strong>Email:</strong> {{this.lockedByUserEmail}}</div>
+            </div>
+        {{else}}
+            <h2 class="suar-lock-title">Post sedang dikunci</h2>
+            <p class="suar-lock-message">Post ini sedang diedit oleh user lain.</p>
+        {{/if}}
+
+        <button type="button" class="suar-lock-button" {{on "click" @closeModal}}>
+            Kembali ke daftar post
+        </button>
+    </div>
+</div>

@@ -127,6 +127,9 @@ export default Model.extend(Comparable, ValidationEngine, {
     publishedBy: belongsTo('user', {async: true}),
     tags: hasMany('tag', {embedded: 'always', async: false}),
     postRevisions: hasMany('post_revisions', {embedded: 'always', async: false}),
+    
+    // SUAR.id custom
+    suarLock: belongsTo('suar_post_lock', {embedded: 'always', async: false}),
 
     primaryAuthor: reads('authors.firstObject'),
     primaryTag: reads('tags.firstObject'),

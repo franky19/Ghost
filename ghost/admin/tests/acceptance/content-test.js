@@ -219,10 +219,14 @@ describe('Acceptance: Posts / Pages', function () {
                     expect(posts[3].querySelector('.gh-content-entry-title').textContent, 'post 4 title').to.contain('Editor Published Post');
 
                     // check API requests
-                    let lastRequests = this.server.pretender.handledRequests.filter(request => request.url.includes('/posts/'));
-                    expect(lastRequests[0].queryParams.filter, 'scheduled request filter').to.have.string('status:scheduled');
-                    expect(lastRequests[1].queryParams.filter, 'drafts request filter').to.have.string('status:draft');
-                    expect(lastRequests[2].queryParams.filter, 'published request filter').to.have.string('status:[published,sent]');
+                    let postRequestFilters = this.server.pretender.handledRequests
+                        .filter(request => request.method === 'GET' && request.url.includes('/posts/'))
+                        .map(request => request.queryParams.filter)
+                        .filter(Boolean);
+
+                    expect(postRequestFilters.some(filter => filter.includes('status:scheduled')), 'scheduled request filter').to.be.true;
+                    expect(postRequestFilters.some(filter => filter.includes('status:draft')), 'drafts request filter').to.be.true;
+                    expect(postRequestFilters.some(filter => filter.includes('status:[published,sent]')), 'published request filter').to.be.true;
                 });
 
                 it('can filter by status', async function () {

@@ -1,6 +1,22 @@
 {{#if this.post}}
 <div class="gh-editor-fullscreen-container">
     <div class="flex flex-row">
+        {{#let this.session.user as |currentUser|}}
+        {{#if this.showSuarLockModal}}
+            {{#if this.lockedByUser}}
+            {{#if (not-eq this.lockedByUser.id currentUser.id)}}
+            {{! Render lock modal when post is locked by another user }}
+            <GhFullscreenModal 
+                @modal="suar-lock" 
+                @model={{this.lockedByUser}}
+                @close={{this.closeSuarLock}}
+                @modifier="total-overlay suar-lock" 
+            />
+            {{/if}}
+            {{/if}}
+        {{/if}}
+        {{/let}}
+
         <GhEditor
             @tagName="section"
             @class="gh-editor gh-view relative"

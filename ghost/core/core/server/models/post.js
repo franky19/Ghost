@@ -1012,7 +1012,10 @@ Post = ghostBookshelf.Model.extend({
     newsletter: function newsletter() {
         return this.belongsTo('Newsletter', 'newsletter_id');
     },
-
+    
+    suar_lock: function suarLock() {
+        return this.hasOne('SuarPostLock', 'post_id');
+    },
     /**
      * @NOTE:
      * If you are requesting models with `columns`, you try to only receive some fields of the model/s.

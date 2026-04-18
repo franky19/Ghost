@@ -11,7 +11,8 @@ export default class PostSerializer extends ApplicationSerializer.extend(Embedde
         updatedAtUTC: {key: 'updated_at'},
         email: {embedded: 'always'},
         newsletter: {embedded: 'always'},
-        postRevisions: {embedded: 'always'}
+        postRevisions: {embedded: 'always'},
+        suarLock: {embedded: 'always'}
     };
 
     serialize(snapshot/*, options*/) {

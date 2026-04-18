@@ -8,8 +8,7 @@
 function buildStripeCommand(...args) {
     const parts = ['stripe', ...args];
 
-    const needsApiKey = process.env.CI || process.env.GHOST_DEV_IS_DOCKER === 'true';
-    if (needsApiKey && process.env.STRIPE_SECRET_KEY) {
+    if (process.env.STRIPE_SECRET_KEY) {
         parts.push('--api-key', process.env.STRIPE_SECRET_KEY);
     }
 
