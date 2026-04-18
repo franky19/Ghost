@@ -1,16 +1,8 @@
-import {
-    Button,
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    LoadingIndicator,
-    LucideIcon,
-    formatTimestamp
-} from '@tryghost/shade';
+import {Button, Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, LoadingIndicator} from '@tryghost/shade/components';
 import {Comment, useBrowseCommentLikes} from '@tryghost/admin-x-framework/api/comments';
 import {CommentAvatar} from './comment-avatar';
+import {LucideIcon, formatTimestamp} from '@tryghost/shade/utils';
+import {formatMemberName} from '@tryghost/shade/app';
 
 interface CommentLikesModalProps {
     comment: Comment;
@@ -44,9 +36,9 @@ function CommentLikesModal({comment, open, onOpenChange}: CommentLikesModalProps
                         <div className="flex min-w-0 flex-col overflow-hidden">
                             <div className="flex min-w-0 items-center gap-1 text-sm">
                                 <span className="shrink-0 font-semibold">
-                                    {comment.member?.name || 'Unknown'}
+                                    {comment.member ? formatMemberName(comment.member) : 'Deleted member'}
                                 </span>
-                                <LucideIcon.Dot className="text-muted-foreground/50 shrink-0" size={16} />
+                                <LucideIcon.Dot className="shrink-0 text-muted-foreground/50" size={16} />
                                 <span className="shrink-0 text-muted-foreground">
                                     {comment.created_at && formatTimestamp(comment.created_at)}
                                 </span>
@@ -80,12 +72,12 @@ function CommentLikesModal({comment, open, onOpenChange}: CommentLikesModalProps
                                                 memberId={like.member?.id}
                                             />
                                             {/* Heart overlay */}
-                                            <div className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-pink-500 text-white">
+                                            <div className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full bg-pink-500 text-white">
                                                 <LucideIcon.Heart className="size-2.5" fill="currentColor" />
                                             </div>
                                         </div>
                                         <span className="font-medium">
-                                            {like.member?.name || 'Deleted member'}
+                                            {like.member ? formatMemberName(like.member) : 'Deleted member'}
                                         </span>
                                     </div>
                                     <span className="shrink-0 text-sm text-muted-foreground">

@@ -225,8 +225,8 @@ async function initFrontend(dataService) {
  * What we want is to be able to optionally load various components and mount them
  * So eventually this function should go away
  * @param {Object} options
- * @param {Boolean} options.backend
- * @param {Boolean} options.frontend
+ * @param {boolean} options.backend
+ * @param {boolean} options.frontend
  * @param {Object} options.config
  */
 async function initExpressApps({frontend, backend, config}) {
@@ -334,6 +334,7 @@ async function initServices() {
     const slackNotifications = require('./server/services/slack-notifications');
     const mediaInliner = require('./server/services/media-inliner');
     const donationService = require('./server/services/donations');
+    const giftService = require('./server/services/gifts');
     const recommendationsService = require('./server/services/recommendations');
     const emailAddressService = require('./server/services/email-address');
     const statsService = require('./server/services/stats');
@@ -376,8 +377,10 @@ async function initServices() {
         donationService.init(),
         recommendationsService.init(),
         statsService.init(),
-        explorePingService.init()
+        explorePingService.init(),
+        giftService.init()
     ]);
+
     debug('End: Services');
 
     debug('End: initServices');
@@ -417,8 +420,13 @@ async function initBackgroundServices({config}) {
     const milestonesService = require('./server/services/milestones');
     milestonesService.initAndRun();
 
+    // TODO(NY-1220): The outbox is deprecated and will soon be removed.
     const outboxService = require('./server/services/outbox');
     outboxService.init();
+
+    const domainEvents = require('@tryghost/domain-events');
+    const WelcomeEmailAutomationsService = require('./server/services/welcome-email-automations');
+    new WelcomeEmailAutomationsService().init(domainEvents);
 
     debug('End: initBackgroundServices');
 }

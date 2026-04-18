@@ -1,6 +1,7 @@
 import AppContext from '../../../../app-context';
-import {getCompExpiry, getMemberSubscription, getMemberTierName, hasMultipleProductsFeature, hasOnlyFreePlan, isComplimentaryMember, isPaidMember, subscriptionHasFreeTrial} from '../../../../utils/helpers';
+import {getSubscriptionExpiry, getMemberSubscription, getMemberTierName, hasMultipleProductsFeature, hasOnlyFreePlan, isComplimentaryMember, isPaidMember, subscriptionHasFreeTrial} from '../../../../utils/helpers';
 import {getDateString} from '../../../../utils/date-time';
+import {ReactComponent as GiftIcon} from '../../../../images/icons/gift.svg';
 import {ReactComponent as LoaderIcon} from '../../../../images/icons/loader.svg';
 import {ReactComponent as OfferTagIcon} from '../../../../images/icons/offer-tag.svg';
 import {useContext} from 'react';
@@ -33,12 +34,21 @@ const PaidAccountActions = () => {
             label = `${Intl.NumberFormat('en', {currency, style: 'currency'}).format(amount / 100)}/${t(interval)}`;
         }
 
-        const compExpiry = getCompExpiry({member});
-        if (isComplimentary) {
-            if (compExpiry) {
-                label = `${t('Complimentary')} - ${t('Expires {expiryDate}', {expiryDate: compExpiry})}`;
+        const subscriptionExpiry = getSubscriptionExpiry({member});
+        const isGiftMember = member?.status === 'gift';
+
+        if (isGiftMember && subscriptionExpiry) {
+            return (
+                <p className="gh-portal-account-discountcontainer">
+                    <GiftIcon className="gh-portal-account-tagicon" />
+                    <span>{`${t('Gift subscription')} - ${t('Expires {expiryDate}', {expiryDate: subscriptionExpiry})}`}</span>
+                </p>
+            );
+        } else if (isComplimentary) {
+            if (subscriptionExpiry) {
+                label = `${t('Complimentary')} - ${t('Expires {expiryDate}', {expiryDate: subscriptionExpiry})}`;
             } else {
-                label = label ? `${t('Complimentary')} (${label})` : t(`Complimentary`);
+                label = t('Complimentary');
             }
         }
 
@@ -59,10 +69,7 @@ const PaidAccountActions = () => {
             );
         }
 
-        let offerLabelStr = getOfferLabel({
-            nextPayment,
-            currentPeriodEnd: subscription?.current_period_end
-        });
+        let offerLabelStr = getOfferLabel({nextPayment});
 
         if (offerLabelStr) {
             oldPriceClassName = 'gh-portal-account-old-price';
@@ -212,14 +219,13 @@ function FreeTrialLabel({subscription}) {
  * @param {'once'|'repeating'|'forever'} nextPayment.discount.duration
  * @param {number|null} nextPayment.discount.duration_in_months - Discount duration in months for "repeating" offers
  * @param {string} nextPayment.discount.start - Discount start date (ISO 8601 date string)
- * @param {string|null} nextPayment.discount.end - Discount end date (ISO 8601 date string), null for forever / once offers
+ * @param {string|null} nextPayment.discount.end - Discount end date (ISO 8601 date string), null for forever offers
  * @param {'fixed'|'percent'} nextPayment.discount.type
  * @param {number} nextPayment.discount.amount - Discount amount (e.g. 20 for 20% percent offer, or 2 for $2 fixed offer)
- * @param {string} currentPeriodEnd - Subscription current period end (ISO 8601 date string)
  *
  * @returns {string}
  */
-function getOfferLabel({nextPayment, currentPeriodEnd}) {
+function getOfferLabel({nextPayment}) {
     if (!nextPayment) {
         return '';
     }
@@ -231,15 +237,9 @@ function getOfferLabel({nextPayment, currentPeriodEnd}) {
         return '';
     }
 
-    let durationLabel = '';
-    if (discount.duration === 'forever') {
-        durationLabel = t('Forever');
-    } else if (discount.duration === 'repeating' && discount.end) {
-        durationLabel = t('Ends {offerEndDate}', {offerEndDate: getDateString(discount.end)});
-    } else if (discount.duration === 'once' && currentPeriodEnd) {
-        // By design, "once" offers don't have a discount end in Stripe. They expire at the end of the current billing period.
-        durationLabel = t('Ends {offerEndDate}', {offerEndDate: getDateString(currentPeriodEnd)});
-    }
+    const durationLabel = discount.end
+        ? t('Ends {offerEndDate}', {offerEndDate: getDateString(discount.end)})
+        : t('Forever');
 
     const formattedPrice = Intl.NumberFormat('en', {currency: nextPayment.currency, style: 'currency'}).format(nextPayment.amount / 100);
 

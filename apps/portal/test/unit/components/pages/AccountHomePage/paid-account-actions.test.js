@@ -24,6 +24,7 @@ describe('PaidAccountActions', () => {
             const site = getSiteData({products, portalProducts: products.map(p => p.id)});
             const member = getMemberData({
                 paid: true,
+                status: 'comped',
                 subscriptions: [
                     getSubscriptionData({
                         status: 'active',
@@ -133,6 +134,7 @@ describe('PaidAccountActions', () => {
 
             const member = getMemberData({
                 paid: true,
+                status: 'comped',
                 subscriptions: [
                     getSubscriptionData({
                         status: 'active',
@@ -192,6 +194,43 @@ describe('PaidAccountActions', () => {
             // Should show "Complimentary" without expiry
             expect(queryByText(/Complimentary/)).toBeInTheDocument();
             expect(queryByText(/Expires/)).not.toBeInTheDocument();
+        });
+
+        test('displays "Gift subscription" with expiry date', () => {
+            const products = getProductsData({numOfProducts: 1});
+            const site = getSiteData({products, portalProducts: products.map(p => p.id)});
+
+            const expiryAt = new Date('2099-01-01T12:00:00.000Z');
+
+            const member = getMemberData({
+                paid: true,
+                status: 'gift',
+                subscriptions: [
+                    getSubscriptionData({
+                        status: 'active',
+                        amount: 0,
+                        currency: 'USD',
+                        interval: 'month',
+                        offer: null,
+                        tier: {
+                            expiry_at: expiryAt
+                        },
+                        nextPayment: getNextPaymentData({
+                            originalAmount: 0,
+                            amount: 0,
+                            interval: 'month',
+                            currency: 'USD',
+                            discount: null
+                        })
+                    })
+                ]
+            });
+
+            const {queryByText} = setup({site, member});
+
+            expect(queryByText(/Gift subscription/)).toBeInTheDocument();
+            expect(queryByText(/Expires/)).toBeInTheDocument();
+            expect(queryByText(/1 Jan 2099/)).toBeInTheDocument();
         });
 
         test('displays discounted price with "Forever" for forever offers', () => {
@@ -339,7 +378,7 @@ describe('PaidAccountActions', () => {
         test('displays discounted price with "Ends {date}" for once offers', () => {
             const products = getProductsData({numOfProducts: 1});
             const site = getSiteData({products, portalProducts: products.map(p => p.id)});
-            const currentPeriodEnd = new Date('2099-03-01T12:00:00.000Z');
+            const discountEnd = new Date('2099-03-01T12:00:00.000Z');
 
             const member = getMemberData({
                 paid: true,
@@ -354,8 +393,6 @@ describe('PaidAccountActions', () => {
                             amount: 20,
                             duration: 'once'
                         },
-                        currentPeriodEnd: currentPeriodEnd.toISOString(),
-
                         nextPayment: getNextPaymentData({
                             originalAmount: 500,
                             amount: 400,
@@ -365,7 +402,7 @@ describe('PaidAccountActions', () => {
                                 duration: 'once',
                                 type: 'percent',
                                 amount: 20,
-                                end: null
+                                end: discountEnd.toISOString()
                             })
                         })
                     })
@@ -378,7 +415,7 @@ describe('PaidAccountActions', () => {
             expect(queryByText('$5.00/month')).toBeInTheDocument();
             // Should have the offer label
             expect(queryByTestId('offer-label')).toBeInTheDocument();
-            // Should show the discounted price with end date from current period end
+            // Should show the discounted price with end date from next_payment.discount.end
             expect(queryByText('$4.00/month — Ends 1 Mar 2099')).toBeInTheDocument();
         });
 

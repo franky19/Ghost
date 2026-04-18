@@ -1,59 +1,9 @@
 <style>
-/* -------------------------------------
-    GLOBAL RESETS
-------------------------------------- */
-
-/*All the styling goes here*/
-
-img {
-    border: none;
-    -ms-interpolation-mode: bicubic;
-    max-width: 100%;
-    {{#if hasRoundedImageCorners}}
-    border-radius: 6px;
-    {{/if}}
-}
+{{>baseStyles}}
 
 img.is-dark-background {
         display: none !important;
         mso-hide: all !important;
-}
-
-body {
-    background-color: #fff;
-
-    font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    font-size: 18px;
-    line-height: 0;
-    margin: 0;
-    padding: 0;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
-    color: #15212A;
-}
-
-table {
-    border-collapse: separate;
-    mso-table-lspace: 0pt;
-    mso-table-rspace: 0pt;
-    width: 100%;
-}
-
-table td {
-    font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 18px;
-    vertical-align: top;
-    color: #15212A;
-}
-
-/* -------------------------------------
-    BODY & CONTAINER
-------------------------------------- */
-.body {
-    width: 100%;
-    line-height: 1.4;
-    background-color: {{backgroundColor}} !important;
 }
 
 .header {
@@ -63,26 +13,6 @@ table td {
     {{else}}
     background-color: {{backgroundColor}};
     {{/if}}
-}
-
-/* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
-.body .container {
-    display: block;
-    margin: 0 auto !important;
-    /* makes it centered */
-    max-width: 600px;
-}
-
-/* This should also be a block element, so that it will fill 100% of the .container */
-.content {
-    box-sizing: border-box;
-    display: block;
-    margin: 0 auto;
-    max-width: 600px;
-}
-
-.content a {
-    overflow-wrap: anywhere;
 }
 
 /* -------------------------------------
@@ -262,7 +192,7 @@ table td {
     margin-top: 32px;
     color: #15212A;
     text-align: center;
-    line-height: 1.1em;
+    line-height: 1.1;
 }
 
 .post-title-link-left {
@@ -278,7 +208,7 @@ table td {
     margin: 0;
     color: {{#if headerBackgroundIsDark}}#ffffff{{else}}#15212A{{/if}};
     font-size: 19px;
-    line-height: 1.4em;
+    line-height: 1.4;
     text-align: center;
 }
 
@@ -387,7 +317,7 @@ table td {
         color: #15212a;
         color: rgba(0, 0, 0, 0.6);
     {{/if}}
-    line-height: 1.5em;
+    line-height: 1.5;
 }
 
 .kg-card-figcaption {
@@ -428,7 +358,7 @@ table td {
     font-size: 13px !important;
     font-weight: 500;
     margin: 1em 0 0 0;
-    line-height: 1.4em;
+    line-height: 1.4;
     word-break: break-word;
 }
 
@@ -552,7 +482,7 @@ h3.latest-posts-header {
     color: {{#if backgroundIsDark}}#ffffff{{else}}#15212A{{/if}} !important;
     font-size: 15px;
     font-weight: 400;
-    line-height: 1.45em;
+    line-height: 1.45;
     text-decoration: none;
 }
 
@@ -565,7 +495,7 @@ h3.latest-posts-header {
     font-size: 15px;
     font-weight: 400;
     text-align: right;
-    line-height: 1.45em;
+    line-height: 1.45;
     vertical-align: bottom;
 }
 
@@ -589,7 +519,7 @@ h3.latest-posts-header {
     max-width: 600px !important;
     font-family: Georgia, serif;
     font-size: 18px;
-    line-height: 1.5em;
+    line-height: 1.5;
     color: #15212A;
     padding-bottom: 20px;
     border-bottom: 1px solid {{dividerColor}};
@@ -598,7 +528,7 @@ h3.latest-posts-header {
 .post-content-sans-serif {
     max-width: 600px !important;
     font-size: 17px;
-    line-height: 1.5em;
+    line-height: 1.5;
     color: #15212A;
     padding-bottom: 20px;
     border-bottom: 1px solid {{dividerColor}};
@@ -669,7 +599,7 @@ a[data-flickr-embed] img {
 .kg-header-card h2 {
     font-size: 32px;
     font-weight: {{titleWeight}};
-    line-height: 1.1em;
+    line-height: 1.1;
     margin: 0 0 0.125em;
 }
 
@@ -684,7 +614,7 @@ a[data-flickr-embed] img {
 .kg-header-card h3 {
     font-size: 17px;
     font-weight: 400;
-    line-height: 1.5em;
+    line-height: 1.5;
     margin: 0;
 }
 
@@ -714,7 +644,7 @@ a[data-flickr-embed] img {
 
 .kg-header-card.kg-v2 .kg-header-card-heading {
     margin: 0;
-    line-height: 1em;
+    line-height: 1;
 }
 
 .kg-header-card.kg-v2 .kg-header-card-subheading-wrapper {
@@ -724,7 +654,7 @@ a[data-flickr-embed] img {
 .kg-header-card.kg-v2 .kg-header-card-subheading {
     margin: 0;
     font-size: 17px;
-    line-height: 1.5em;
+    line-height: 1.5;
 }
 
 .kg-header-card.kg-v2 .kg-header-card-heading a,
@@ -764,7 +694,7 @@ a[data-flickr-embed] img {
     padding-top: 4px;
     font-size: 16px;
     font-weight: 600;
-    line-height: 18px;
+    line-height: 1.125;
     text-decoration: none !important;
     color: {{#if backgroundIsDark}}#ffffff{{else}}#15212A{{/if}} !important;
 }
@@ -800,49 +730,6 @@ a[data-flickr-embed] img {
     {{/if}}
 }
 
-.kg-transistor-card {
-    width: auto;
-    width: 100%;
-    margin: 0 auto 1.5em;
-    border-radius: 10px;
-    {{#if backgroundIsDark}}
-        background-color: #15212A;
-        background-color: rgba(0, 0, 0, 0.15);
-        border: 1px solid #343434;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-    {{else}}
-        background-color: #ffffff;
-        background-color: rgba(255, 255, 255, 0.25);
-        border: 1px solid #e0e7eb;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-    {{/if}}
-}
-.kg-transistor-title {
-    display: block;
-    padding-right: 20px;
-    padding-bottom: 4px;
-    padding-top: 4px;
-    font-size: 17px;
-    font-weight: 600;
-    line-height: 18px;
-    text-decoration: none !important;
-    color: {{#if backgroundIsDark}}#ffffff{{else}}#15212A{{/if}} !important;
-}
-.kg-transistor-description {
-    display: inline-block;
-    max-width: 400px;
-    font-size: 14px;
-    line-height: 1.4em;
-    text-decoration: none !important;
-    {{#if backgroundIsDark}}
-    color: #ffffff !important;
-    color: rgba(255, 255, 255, 0.6) !important;
-    {{else}}
-    color: #15212a !important;
-    color: rgba(0, 0, 0, 0.6) !important;
-    {{/if}}
-}
-
 .kg-file-card {
     width: auto;
     width: 100%;
@@ -867,7 +754,7 @@ a[data-flickr-embed] img {
     padding-top: 8px;
     font-size: 17px;
     font-weight: bold;
-    line-height: 1.3em;
+    line-height: 1.3;
     text-decoration: none !important;
     color: {{#if backgroundIsDark}}#ffffff{{else}}#15212A{{/if}} !important;
 }
@@ -877,7 +764,7 @@ a[data-flickr-embed] img {
     padding-left: 12px;
     padding-top: 2px;
     font-size: 15px;
-    line-height: 1.4em;
+    line-height: 1.4;
     text-decoration: none !important;
     {{#if backgroundIsDark}}
     color: #ffffff !important;
@@ -894,7 +781,7 @@ a[data-flickr-embed] img {
     padding-top: 4px;
     padding-bottom: 8px;
     font-size: 13px;
-    line-height: 1.4em;
+    line-height: 1.4;
     text-decoration: none !important;
     {{#if backgroundIsDark}}
     color: #ffffff;
@@ -1003,111 +890,16 @@ a[data-flickr-embed] img {
     padding: 0;
 }
 
-.main,
 .header-main {
     border-spacing: 20px 0;
     width: 100%;
     max-width: 600px;
     background: #ffffff;
-}
-
-.header-main {
     {{#if headerBackgroundColor}}
     background-color: {{headerBackgroundColor}};
     {{else}}
     background-color: transparent;
     {{/if}}
-}
-
-.main {
-    background-color: {{backgroundColor}} !important;
-}
-
-.wrapper {
-    box-sizing: border-box;
-}
-
-.content-block {
-    padding-bottom: 10px;
-    padding-top: 10px;
-}
-
-.footer {
-    {{#if backgroundIsDark}}
-        color: #ffffff;
-        color: rgba(255, 255, 255, .6);
-    {{else}}
-        color: #15212a;
-        color: rgba(0, 0, 0, 0.6);
-    {{/if}}
-    margin-top: 20px;
-    text-align: center;
-    font-size: 13px!important;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    padding-left: 30px;
-    padding-right: 30px;
-    line-height: 1.5em;
-}
-
-.footer a {
-    {{#if backgroundIsDark}}
-        color: #ffffff;
-        color: rgba(255, 255, 255, .6);
-    {{else}}
-        color: #15212a;
-        color: rgba(0, 0, 0, 0.6);
-    {{/if}}
-    text-decoration: underline;
-    font-size: 13px;
-}
-
-/* -------------------------------------
-    OTHER STYLES THAT MIGHT BE USEFUL
-------------------------------------- */
-.last {
-    margin-bottom: 0;
-}
-
-.first {
-    margin-top: 0;
-}
-
-.align-center {
-    text-align: center;
-}
-
-.align-right {
-    text-align: right;
-}
-
-.align-left {
-    text-align: left;
-}
-
-.clear {
-    clear: both;
-}
-
-.mt0 {
-    margin-top: 0;
-}
-
-.mb0 {
-    margin-bottom: 0;
-}
-
-.preheader {
-    color: transparent;
-    display: none;
-    height: 0;
-    max-height: 0;
-    max-width: 0;
-    opacity: 0;
-    overflow: hidden;
-    mso-hide: all;
-    visibility: hidden;
-    width: 0;
 }
 
 .mobile-only {
@@ -1122,11 +914,6 @@ a[data-flickr-embed] img {
     RESPONSIVE AND MOBILE FRIENDLY STYLES
 ------------------------------------- */
 @media only screen and (max-width: 620px) {
-
-    table.body {
-        width: 100%;
-        min-width: 100%;
-    }
 
     .hide-mobile {
         display: none;
@@ -1161,21 +948,12 @@ a[data-flickr-embed] img {
 
     table.body .kg-callout-text {
         font-size: 16px !important;
-        line-height: 1.5em !important;
+        line-height: 1.5 !important;
     }
 
     table.body pre {
         white-space: pre-wrap !important;
         word-break: break-word !important;
-    }
-
-    table.body .content {
-        padding: 0 !important;
-    }
-
-    table.body .container {
-        padding: 0 !important;
-        width: 100% !important;
     }
 
     table.body .main,
@@ -1184,12 +962,6 @@ a[data-flickr-embed] img {
         border-left-width: 0 !important;
         border-radius: 0 !important;
         border-right-width: 0 !important;
-    }
-
-    table.body .img-responsive {
-        height: auto !important;
-        max-width: 100% !important;
-        width: auto !important;
     }
 
     table.header .site-icon {
@@ -1222,7 +994,7 @@ a[data-flickr-embed] img {
     table.header .post-meta-date {
         white-space: normal !important;
         font-size: 13px !important;
-        line-height: 1.2em;
+        line-height: 1.2;
     }
 
     table.header .post-meta,
@@ -1266,7 +1038,7 @@ a[data-flickr-embed] img {
 
     table.header .post-title a {
         font-size: 26px !important;
-        line-height: 1.1em !important;
+        line-height: 1.1 !important;
     }
 
     table.feedback-buttons {
@@ -1327,38 +1099,38 @@ a[data-flickr-embed] img {
 
     table.body h1 {
         font-size: 32px !important;
-        line-height: 1.3em !important;
+        line-height: 1.3 !important;
     }
 
     table.body h2,
     table.body h2 span {
         font-size: 26px !important;
-        line-height: 1.22em !important;
+        line-height: 1.22 !important;
     }
 
     table.body h3 {
         font-size: 21px !important;
-        line-height: 1.25em !important;
+        line-height: 1.25 !important;
     }
 
     table.body h4 {
         font-size: 19px !important;
-        line-height: 1.3em !important;
+        line-height: 1.3 !important;
     }
 
     table.body h5 {
         font-size: 16px !important;
-        line-height: 1.4em !important;
+        line-height: 1.4 !important;
     }
 
     table.body h6 {
         font-size: 16px !important;
-        line-height: 1.4em !important;
+        line-height: 1.4 !important;
     }
 
     table.body blockquote {
         font-size: 16px !important;
-        line-height: 1.6em;
+        line-height: 1.6;
         margin-bottom: 0;
     }
 
@@ -1371,7 +1143,7 @@ a[data-flickr-embed] img {
         border-left: 0 none !important;
         margin: 0 !important;
         font-size: 18px !important;
-        line-height: 1.4em !important;
+        line-height: 1.4 !important;
     }
 
     table.body blockquote.kg-blockquote-alt p {
@@ -1396,43 +1168,9 @@ a[data-flickr-embed] img {
    }
 }
 
-/* -------------------------------------
-    PRESERVE THESE STYLES IN THE HEAD
-------------------------------------- */
 @media all {
     .subscription-details p.hidden {
         display: none !important;
-    }
-
-    .ExternalClass {
-        width: 100%;
-    }
-
-    .ExternalClass,
-    .ExternalClass p,
-    .ExternalClass span,
-    .ExternalClass font,
-    .ExternalClass td,
-    .ExternalClass div {
-        line-height: 100%;
-    }
-
-    .apple-link a {
-        color: inherit !important;
-        font-family: inherit !important;
-        font-size: inherit !important;
-        font-weight: inherit !important;
-        line-height: inherit !important;
-        text-decoration: none !important;
-    }
-
-    #MessageViewBody a {
-        color: inherit;
-        text-decoration: none;
-        font-size: inherit;
-        font-family: inherit;
-        font-weight: inherit;
-        line-height: inherit;
     }
 }
 
