@@ -1,3 +1,4 @@
+// NOTE: this has been copy-pasted into apps/posts/src/views/Automations/components/automation-email-design-modal.tsx because we need to support the email design modal in both the settings app and the posts app until Automations GAs
 import EmailDesignModal from '../../email-design/email-design-modal';
 import EmailPreview from '../../email-design/email-preview';
 import HeaderImageField from '../../email-design/header-image-field';
@@ -21,7 +22,7 @@ import {
     LinkStyleField,
     SectionTitleColorField
 } from '../../email-design/design-fields';
-import {DEFAULT_EMAIL_DESIGN, type EmailDesignSettings, type PersistedEmailDesignSettings} from '../../email-design/types';
+import {DEFAULT_EMAIL_DESIGN, type EmailDesignSettings} from '../../email-design/types';
 import {EmailDesignProvider} from '../../email-design/email-design-context';
 import {Input, LoadingIndicator, Separator, Switch, Tabs, TabsContent, TabsList, TabsTrigger, Textarea} from '@tryghost/shade/components';
 import {WELCOME_EMAIL_SLUGS, type WelcomeEmailType, getDefaultWelcomeEmailValues} from './default-welcome-email-values';
@@ -50,22 +51,9 @@ interface WelcomeEmailCustomizeFormState {
 }
 
 const SAVE_ERROR_TOAST_ID = 'welcome-email-design-save-error';
-const NON_DESIGN_FIELDS = new Set([
-    'id',
-    'slug',
-    'created_at',
-    'updated_at',
-    'header_image',
-    'show_header_icon',
-    'show_header_title',
-    'show_badge',
-    'footer_content'
-]);
-const PREVIEW_ONLY_FIELDS = new Set([
-    'post_title_color',
-    'title_alignment'
-]);
+const WELCOME_EMAIL_DESIGN_FIELDS = new Set(Object.keys(DEFAULT_EMAIL_DESIGN));
 
+const isWelcomeEmailDesignField = (key: string) => WELCOME_EMAIL_DESIGN_FIELDS.has(key);
 interface GeneralTabProps {
     generalSettings: GeneralSettings;
     onGeneralChange: (updates: Partial<GeneralSettings>) => void;
@@ -306,29 +294,22 @@ function mapApiToGeneralSettings(
 }
 
 /**
- * Maps API response fields to the frontend EmailDesignSettings shape.
+ * Maps API response fields to the frontend welcome-email design settings shape.
  *
- * @param {PersistedEmailDesignSettings} apiData - The persisted design fields from the API response
- * @returns {EmailDesignSettings} Design settings populated from the API response, with local-only preview fields set to defaults
+ * @param {EmailDesignSettings} apiData - The persisted design fields from the API response
+ * @returns {EmailDesignSettings} Design settings populated from the API response
  */
 export function mapApiToDesignSettings(
-    apiData: PersistedEmailDesignSettings
+    apiData: EmailDesignSettings
 ): EmailDesignSettings {
-    const persistedDesign = Object.fromEntries(
-        Object.entries(apiData).filter(([key]) => !NON_DESIGN_FIELDS.has(key))
-    ) as PersistedEmailDesignSettings;
-
-    return {
-        ...persistedDesign,
-        // Local-only fields not stored in the backend
-        post_title_color: DEFAULT_EMAIL_DESIGN.post_title_color,
-        title_alignment: DEFAULT_EMAIL_DESIGN.title_alignment
-    };
+    return Object.fromEntries(
+        Object.entries(apiData).filter(([key]) => isWelcomeEmailDesignField(key))
+    ) as EmailDesignSettings;
 }
 
 export function buildAutomatedEmailDesignPayload(state: WelcomeEmailCustomizeFormState): EditAutomatedEmailDesign {
     const persistedDesign = Object.fromEntries(
-        Object.entries(state.designSettings).filter(([key]) => !PREVIEW_ONLY_FIELDS.has(key) && !NON_DESIGN_FIELDS.has(key))
+        Object.entries(state.designSettings).filter(([key]) => isWelcomeEmailDesignField(key))
     );
 
     return {
@@ -354,8 +335,11 @@ const normalizeSenderValue = (value: string | null | undefined) => {
 
 const WelcomeEmailCustomizeModal = NiceModal.create(() => {
     const modal = useModal();
-    const {siteData, settings: globalSettings} = useGlobalData();
-    const [siteTitle, defaultEmailAddress, icon] = getSettingValues<string>(globalSettings, ['title', 'default_email_address', 'icon']);
+    const {siteData, settings: globalSettings, config} = useGlobalData();
+    const [siteTitle, defaultEmailAddress, icon, supportEmailAddress] = getSettingValues<string>(
+        globalSettings,
+        ['title', 'default_email_address', 'icon', 'support_email_address']
+    );
 
     const handleError = useHandleError();
     const {data: designData, isLoading, isError} = useReadAutomatedEmailDesign();
@@ -376,7 +360,12 @@ const WelcomeEmailCustomizeModal = NiceModal.create(() => {
         replyToEmailPlaceholder,
         showSenderEmailInput,
         senderEmailDomain
-    } = useWelcomeEmailSenderDetails(automatedEmails);
+    } = useWelcomeEmailSenderDetails(automatedEmails, {
+        config,
+        defaultEmailAddress,
+        siteTitle,
+        supportEmailAddress
+    });
 
     const defaultGeneralSettings = useMemo<GeneralSettings>(() => ({
         senderName: senderNameInput,
@@ -544,9 +533,11 @@ const WelcomeEmailCustomizeModal = NiceModal.create(() => {
                     <ErrorState message={fetchErrorMessage} />
                 ) : (
                     <EmailPreview
+                        accentColor={siteData.accent_color}
                         emailFooter={generalSettings.emailFooter}
                         footerLinkText="Manage your preferences"
                         headerImage={generalSettings.headerImage}
+                        publicationIcon={icon}
                         replyToEmail={generalSettings.replyToEmail || replyToEmailPlaceholder || ''}
                         senderEmail={generalSettings.senderEmail || senderEmailPlaceholder || defaultEmailAddress || ''}
                         senderName={generalSettings.senderName || senderNamePlaceholder || siteTitle || 'Your site'}
@@ -556,6 +547,7 @@ const WelcomeEmailCustomizeModal = NiceModal.create(() => {
                         showPublicationTitle={generalSettings.showPublicationTitle}
                         showRecipientLine={false}
                         showSubjectLine={false}
+                        siteTitle={siteTitle}
                         subject={`Welcome to ${generalSettings.senderName || senderNamePlaceholder || siteTitle || 'our publication'}`}
                     >
                         <WelcomeEmailPreviewContent />

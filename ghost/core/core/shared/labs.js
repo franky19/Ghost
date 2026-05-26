@@ -24,8 +24,11 @@ const GA_FEATURES = [
     'customFonts',
     'explore',
     'commentModeration',
+    'commentsThreads',
+    'commentsPinning',
     'featurebaseFeedback',
-    'welcomeEmailsDesignCustomization'
+    'giftSubscriptions',
+    'dangerZoneResetAuth'
 ];
 
 // These features are considered publicly available and can be enabled/disabled by users
@@ -38,6 +41,7 @@ const PUBLIC_BETA_FEATURES = [
 // These features are considered private they live in the private tab of the labs settings page
 // Which is only visible if the developer experiments flag is enabled
 const PRIVATE_FEATURES = [
+    'automations',
     'stripeAutomaticTax',
     'importMemberTier',
     'urlCache',
@@ -48,11 +52,8 @@ const PRIVATE_FEATURES = [
     'emailUniqueid',
     'themeTranslation',
     'indexnow',
-    'membersForward',
-    'dripSequences',
     'pictureImageFormats',
-    'smarterCounts',
-    'giftSubscriptions'
+    'smarterCounts'
 ];
 
 module.exports.GA_KEYS = [...GA_FEATURES];

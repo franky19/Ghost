@@ -554,7 +554,61 @@ function setupGhostApi({siteUrl = window.location.origin, apiUrl, apiKey}) {
             });
         },
 
-        async checkoutGift({tierId, cadence} = {}) {
+        async continueGiftCheckout() {
+            const siteUrlObj = new URL(siteUrl);
+            const identity = await api.member.identity();
+            const url = endpointFor({type: 'members', resource: 'create-stripe-checkout-session'});
+
+            const checkoutSuccessUrl = window.location.href.startsWith(siteUrlObj.href) ? new URL(window.location.href) : new URL(siteUrl);
+            checkoutSuccessUrl.searchParams.set('stripe', 'success');
+
+            const checkoutCancelUrl = window.location.href.startsWith(siteUrlObj.href) ? new URL(window.location.href) : new URL(siteUrl);
+            checkoutCancelUrl.searchParams.set('stripe', 'cancel');
+
+            const body = {
+                type: 'subscription',
+                continueFromGift: true,
+                identity,
+                successUrl: checkoutSuccessUrl.href,
+                cancelUrl: checkoutCancelUrl.href,
+                metadata: {
+                    checkoutType: 'upgrade',
+                    requestSrc: 'portal',
+                    urlHistory: getUrlHistory()
+                }
+            };
+
+            return makeRequest({
+                url,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }).then(async function (res) {
+                if (!res.ok) {
+                    const errData = await res.json();
+                    const errMssg = errData?.errors?.[0]?.message || 'Failed to continue gift subscription, please try again.';
+                    throw new Error(errMssg);
+                }
+                return res.json();
+            }).then(function (responseBody) {
+                if (responseBody.url) {
+                    return window.location.assign(responseBody.url);
+                }
+                const stripe = window.Stripe(responseBody.publicKey);
+                return stripe.redirectToCheckout({
+                    sessionId: responseBody.sessionId
+                }).then(function (redirectResult) {
+                    if (redirectResult.error) {
+                        throw new Error(redirectResult.error.message);
+                    }
+                });
+            });
+        },
+
+        async checkoutGift({tierId, cadence, email: customerEmail} = {}) {
+            const siteUrlObj = new URL(siteUrl);
             const url = endpointFor({type: 'members', resource: 'create-stripe-checkout-session'});
 
             let identity = null;
@@ -564,6 +618,9 @@ function setupGhostApi({siteUrl = window.location.origin, apiUrl, apiKey}) {
                 // Not authenticated - that's fine for gift purchases
             }
 
+            const cancelUrlObj = window.location.href.startsWith(siteUrlObj.href) ? new URL(window.location.href) : new URL(siteUrl);
+            cancelUrlObj.hash = '#/portal/gift';
+
             const body = {
                 identity,
                 metadata: {
@@ -571,8 +628,13 @@ function setupGhostApi({siteUrl = window.location.origin, apiUrl, apiKey}) {
                 },
                 type: 'gift',
                 tierId,
-                cadence
+                cadence,
+                cancelUrl: cancelUrlObj.href
             };
+
+            if (customerEmail) {
+                body.customerEmail = customerEmail;
+            }
 
             const response = await makeRequest({
                 url,
